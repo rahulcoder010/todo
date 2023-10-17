@@ -63,4 +63,24 @@ router.put('/update/password/:id', async (req, res) => {
   }
 });
 
+// Login
+router.post('/login', async (req, res) => {
+  try {
+    // Implement login logic here
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Forgot password
+router.post('/forgotpassword', async (req, res) => {
+  try {
+    // Implement forgot password logic here
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 module.exports = router;
