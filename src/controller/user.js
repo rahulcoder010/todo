@@ -1,66 +1,54 @@
-const express = require('express');
-const User = require('../models/User');
-
-const router = express.Router();
-
-// Register a new user
-router.post('/register', async (req, res) => {
+router.post('/login', async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
 
-    const user = new User({ username, email, password });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (!user.comparePassword(password)) {
+      return res.status(401).json({ message: 'Invalid password' });
+    }
+
+    res.json({ message: 'Logged in successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+router.post('/forgot-password', async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const resetToken = generateResetToken();
+    const resetPasswordTokenExpiry = Date.now() + 3600000; // 1 hour
+
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordTokenExpiry = resetPasswordTokenExpiry;
 
     await user.save();
 
-    res.status(201).json({ message: 'User registered successfully' });
+    // Send the reset password email
+    sendResetPasswordEmail(user.email, resetToken);
+
+    res.json({ message: 'Reset password email sent' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
 });
 
-// Update a user
-router.put('/update/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { username, email, password } = req.body;
+function generateResetToken() {
+  // Generate a random reset token using a library or algorithm
+}
 
-    const updatedUser = await User.findByIdAndUpdate(id, {
-      username,
-      email,
-      password
-    }, { new: true });
-
-    if (!updatedUser) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    res.json(updatedUser);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-// Update password
-router.put('/update/password/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { password } = req.body;
-
-    const updatedUser = await User.findByIdAndUpdate(id, {
-      password
-    }, { new: true });
-
-    if (!updatedUser) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    res.json(updatedUser);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-module.exports = router;
+function sendResetPasswordEmail(email, resetToken) {
+  // Logic to send the reset password email
+}
