@@ -1,19 +1,15 @@
 const express = require('express');
-const cors = require('cors');
-const socketIO = require('socket.io');
-const routes = require('./src/routes/index');
-
 const app = express();
-const port = 3000;
-
+const cors = require('cors');
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+const routes = require('./src/routes/index.js');
 app.use(cors());
 
-const server = app.listen(port, () => {
-  console.log(`Server started on port ${port}`);
+// Add socket IO integration
+
+// Import routes from src/routes/index.js
+
+http.listen(3000, function () {
+  console.log('Server is running on port 3000');
 });
-
-const io = socketIO(server);
-
-app.use('/', routes);
-
-module.exports = app;
