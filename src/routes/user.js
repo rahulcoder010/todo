@@ -1,9 +1,11 @@
-import express from 'express';
-import { getUser, createUser } from '../controller/user.js';
-
+const express = require('express');
 const router = express.Router();
+// import controller functions
+const { registerUser, updateUser, updatePassword } = require('../controller/user');
 
-router.get('/', getUser);
-router.post('/', createUser);
+// add routes
+router.post('/register', registerUser);
+router.put('/update', updateUser);
+router.patch('/password', updatePassword);
 
-export default router;
+module.exports = router;
