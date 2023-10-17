@@ -1,99 +1,66 @@
+const express = require('express');
 const User = require('../models/User');
 
+const router = express.Router();
+
 // Register a new user
-exports.registerUser = async (req, res) => {
+router.post('/register', async (req, res) => {
   try {
-    // Get user input
-    const { name, email, password } = req.body;
-    
-    // Create user object
-    const user = new User({
-      name,
+    const { username, email, password } = req.body;
+
+    const user = new User({ username, email, password });
+
+    await user.save();
+
+    res.status(201).json({ message: 'User registered successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Update a user
+router.put('/update/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { username, email, password } = req.body;
+
+    const updatedUser = await User.findByIdAndUpdate(id, {
+      username,
       email,
       password
-    });
-    
-    // Save user to database
-    await user.save();
-    
-    // Send response
-    res.status(200).json({
-      message: 'User registered successfully'
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: 'Internal server error'
-    });
-  }
-}
+    }, { new: true });
 
-// Update a user's information
-exports.updateUser = async (req, res) => {
-  try {
-    // Get user input
-    const { name, email } = req.body;
-    const userId = req.params.id;
-    
-    // Find user in database
-    const user = await User.findById(userId);
-    
-    // Check if user exists
-    if (!user) {
-      res.status(404).json({
-        message: 'User not found'
-      });
-      return;
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
     }
-    
-    // Update user information
-    user.name = name;
-    user.email = email;
-    
-    // Save updated user to database
-    await user.save();
-    
-    // Send response
-    res.status(200).json({
-      message: 'User updated successfully'
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: 'Internal server error'
-    });
-  }
-}
 
-// Update a user's password
-exports.updatePassword = async (req, res) => {
+    res.json(updatedUser);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Update password
+router.put('/update/password/:id', async (req, res) => {
   try {
-    // Get user input
+    const { id } = req.params;
     const { password } = req.body;
-    const userId = req.params.id;
-    
-    // Find user in database
-    const user = await User.findById(userId);
-    
-    // Check if user exists
-    if (!user) {
-      res.status(404).json({
-        message: 'User not found'
-      });
-      return;
+
+    const updatedUser = await User.findByIdAndUpdate(id, {
+      password
+    }, { new: true });
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
     }
-    
-    // Update user password
-    user.password = password;
-    
-    // Save updated user to database
-    await user.save();
-    
-    // Send response
-    res.status(200).json({
-      message: 'Password updated successfully'
-    });
+
+    res.json(updatedUser);
   } catch (error) {
-    res.status(500).json({
-      message: 'Internal server error'
-    });
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
   }
-}
+});
+
+module.exports = router;
