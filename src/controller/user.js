@@ -97,3 +97,73 @@ exports.updatePassword = async (req, res) => {
     });
   }
 }
+
+// Endpoint for login
+exports.loginUser = async (req, res) => {
+  try {
+    // Get user input
+    const { email, password } = req.body;
+    
+    // Find user in database
+    const user = await User.findOne({ email });
+    
+    // Check if user exists
+    if (!user) {
+      res.status(404).json({
+        message: 'User not found'
+      });
+      return;
+    }
+    
+    // Check if password is correct
+    if (password !== user.password) {
+      res.status(401).json({
+        message: 'Incorrect password'
+      });
+      return;
+    }
+    
+    // Perform login logic
+    // ...
+    
+    // Send response
+    res.status(200).json({
+      message: 'Login successful'
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: 'Internal server error'
+    });
+  }
+}
+
+// Endpoint for forgot password
+exports.forgotPassword = async (req, res) => {
+  try {
+    // Get user input
+    const { email } = req.body;
+    
+    // Find user in database
+    const user = await User.findOne({ email });
+    
+    // Check if user exists
+    if (!user) {
+      res.status(404).json({
+        message: 'User not found'
+      });
+      return;
+    }
+    
+    // Perform forgot password logic
+    // ...
+    
+    // Send response
+    res.status(200).json({
+      message: 'Password reset email sent'
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: 'Internal server error'
+    });
+  }
+}
