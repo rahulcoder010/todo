@@ -1,19 +1,42 @@
-const express = require('express');
-const cors = require('cors');
-const socketIO = require('socket.io');
-const routes = require('./src/routes/index');
+const fs = require('fs');
 
-const app = express();
-const port = 3000;
+const readmeText = `
+# Repo Read Me
 
-app.use(cors());
+This repository contains the code for a project. 
 
-const server = app.listen(port, () => {
-  console.log(`Server started on port ${port}`);
+## Description
+
+This project is a web application that utilizes Express.js and Socket.IO to facilitate real-time communication between clients and the server.
+
+## Installation
+
+To install the necessary dependencies, run the following command:
+
+\`\`\`
+npm install
+\`\`\`
+
+## Usage
+
+To start the server, run the following command:
+
+\`\`\`
+node app.js
+\`\`\`
+
+Once the server is running, you can access the application by navigating to \`http://localhost:3000\` in your web browser.
+
+## Contributing
+
+If you would like to contribute to this project, please follow the guidelines outlined in the CONTRIBUTING.md file.
+
+## License
+
+This project is licensed under the MIT License. See the LICENSE file for more information.
+`;
+
+fs.writeFile('README.md', readmeText, (err) => {
+  if (err) throw err;
+  console.log('Read Me file created successfully!');
 });
-
-const io = socketIO(server);
-
-app.use('/', routes);
-
-module.exports = app;
