@@ -1,5 +1,12 @@
+```javascript
 const express = require('express');
 const User = require('../models/User');
+const chai = require('chai');
+const chaiHttp = require('chai-http');
+const app = express();
+const expect = chai.expect;
+
+chai.use(chaiHttp);
 
 const router = express.Router();
 
@@ -84,3 +91,4 @@ router.post('/forgotpassword', async (req, res) => {
 });
 
 module.exports = router;
+```
