@@ -1,5 +1,8 @@
 const express = require('express');
 const User = require('../models/User');
+const chai = require('chai');
+const chaiHttp = require('chai-http');
+chai.use(chaiHttp);
 
 const router = express.Router();
 
@@ -67,6 +70,13 @@ router.put('/update/password/:id', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     // Implement login logic here
+    // Write chai and mocha test cases for login
+    const res = await chai.request(server)
+      .post('/login')
+      .send({ username: 'testuser', password: 'password' });
+
+    expect(res).to.have.status(200);
+    expect(res.body.message).to.equal('Login successful');
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
@@ -77,6 +87,13 @@ router.post('/login', async (req, res) => {
 router.post('/forgotpassword', async (req, res) => {
   try {
     // Implement forgot password logic here
+    // Write chai and mocha test cases for forgot password
+    const res = await chai.request(server)
+      .post('/forgotpassword')
+      .send({ email: 'testuser@example.com' });
+
+    expect(res).to.have.status(200);
+    expect(res.body.message).to.equal('Password reset email sent');
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
