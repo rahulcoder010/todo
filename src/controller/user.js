@@ -1,7 +1,28 @@
 const express = require('express');
 const User = require('../models/User');
+const AWS = require('aws-sdk');
+const multer = require('multer');
+const multerS3 = require('multer-s3');
 
 const router = express.Router();
+
+// AWS S3 configuration
+const s3 = new AWS.S3({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+});
+
+// Set up multer-s3 storage
+const upload = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: 'prodigy-profile-conductor',
+    acl: 'public-read',
+    key: function (req, file, cb) {
+      cb(null, `${Date.now().toString()}-${file.originalname}`);
+    },
+  }),
+});
 
 // Register a new user
 router.post('/register', async (req, res) => {
@@ -50,6 +71,27 @@ router.put('/update/password/:id', async (req, res) => {
 
     const updatedUser = await User.findByIdAndUpdate(id, {
       password
+    }, { new: true });
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json(updatedUser);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Upload user profile picture
+router.post('/upload-profile-picture/:id', upload.single('profilePicture'), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { key } = req.file;
+
+    const updatedUser = await User.findByIdAndUpdate(id, {
+      profilePicture: key
     }, { new: true });
 
     if (!updatedUser) {
