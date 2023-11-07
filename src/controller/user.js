@@ -83,4 +83,32 @@ router.post('/forgotpassword', async (req, res) => {
   }
 });
 
+// Add endpoints for user profile picture using S3 bucket
+router.post('/profilepicture', async (req, res) => {
+  try {
+    // Implement logic to upload user profile picture to S3 bucket
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+router.get('/profilepicture/:id', async (req, res) => {
+  try {
+    // Implement logic to retrieve user profile picture from S3 bucket
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+router.delete('/profilepicture/:id', async (req, res) => {
+  try {
+    // Implement logic to delete user profile picture from S3 bucket
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 module.exports = router;
