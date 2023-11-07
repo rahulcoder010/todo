@@ -84,3 +84,69 @@ router.post('/forgotpassword', async (req, res) => {
 });
 
 module.exports = router;
+
+// Test cases using chai and mocha
+const chai = require('chai');
+const chaiHttp = require('chai-http');
+const app = require('../app');
+const expect = chai.expect;
+chai.use(chaiHttp);
+
+describe('User API', () => {
+  // Register a new user
+  describe('POST /register', () => {
+    it('should register a new user', (done) => {
+      chai.request(app)
+        .post('/api/user/register')
+        .send({
+          username: 'testuser',
+          email: 'testemail@example.com',
+          password: 'testpassword'
+        })
+        .end((err, res) => {
+          expect(res).to.have.status(201);
+          expect(res.body).to.be.an('object');
+          expect(res.body.message).to.equal('User registered successfully');
+          done();
+        });
+    });
+  });
+
+  // Update a user
+  describe('PUT /update/:id', () => {
+    it('should update a user', (done) => {
+      chai.request(app)
+        .put('/api/user/update/123')
+        .send({
+          username: 'updateduser',
+          email: 'updatedemail@example.com',
+          password: 'updatedpassword'
+        })
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res.body).to.be.an('object');
+          expect(res.body.username).to.equal('updateduser');
+          expect(res.body.email).to.equal('updatedemail@example.com');
+          expect(res.body.password).to.equal('updatedpassword');
+          done();
+        });
+    });
+  });
+
+  // Update password
+  describe('PUT /update/password/:id', () => {
+    it('should update the password of a user', (done) => {
+      chai.request(app)
+        .put('/api/user/update/password/123')
+        .send({
+          password: 'newpassword'
+        })
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res.body).to.be.an('object');
+          expect(res.body.password).to.equal('newpassword');
+          done();
+        });
+    });
+  });
+});
