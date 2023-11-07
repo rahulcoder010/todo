@@ -83,4 +83,26 @@ router.post('/forgotpassword', async (req, res) => {
   }
 });
 
+// Update user profile picture
+router.put('/update/profilepicture/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Logic to handle file upload to S3 bucket 'prodigy-profile-conductor'
+
+    const updatedUser = await User.findByIdAndUpdate(id, {
+      $set: { profilePicture: /* Path to the uploaded file in S3 bucket */ }
+    }, { new: true });
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json(updatedUser);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 module.exports = router;
