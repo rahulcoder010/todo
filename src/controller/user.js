@@ -67,6 +67,7 @@ router.put('/update/password/:id', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     // Implement login logic here
+    res.status(200);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
