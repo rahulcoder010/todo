@@ -1,86 +1,120 @@
+// Required packages
 const express = require('express');
 const User = require('../models/User');
+const chai = require('chai');
+const chaiHttp = require('chai-http');
+const app = express();
+const expect = chai.expect;
 
-const router = express.Router();
+chai.use(chaiHttp);
 
 // Register a new user
-router.post('/register', async (req, res) => {
-  try {
-    const { username, email, password } = req.body;
-
-    const user = new User({ username, email, password });
-
-    await user.save();
-
-    res.status(201).json({ message: 'User registered successfully' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
+describe('POST /register', function () {
+  it('should register a new user and return a success message', function (done) {
+    chai
+      .request(app)
+      .post('/register')
+      .send({ username: 'testuser', email: 'testuser@example.com', password: 'testpassword' })
+      .end(function (err, res) {
+        expect(res).to.have.status(201);
+        expect(res.body).to.deep.equal({ message: 'User registered successfully' });
+        done();
+      });
+  });
 });
 
 // Update a user
-router.put('/update/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { username, email, password } = req.body;
+describe('PUT /update/:id', function () {
+  it('should update a user and return the updated user', function (done) {
+    const userId = 'exampleid';
+    const updatedUser = { username: 'testuser', email: 'testuser@example.com', password: 'testpassword' };
 
-    const updatedUser = await User.findByIdAndUpdate(id, {
-      username,
-      email,
-      password
-    }, { new: true });
+    chai
+      .request(app)
+      .put(`/update/${userId}`)
+      .send(updatedUser)
+      .end(function (err, res) {
+        expect(res).to.have.status(200);
+        expect(res.body).to.deep.equal(updatedUser);
+        done();
+      });
+  });
 
-    if (!updatedUser) {
-      return res.status(404).json({ message: 'User not found' });
-    }
+  it('should return an error message if the user is not found', function (done) {
+    const userId = 'nonexistentid';
+    const updatedUser = { username: 'testuser', email: 'testuser@example.com', password: 'testpassword' };
 
-    res.json(updatedUser);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
+    chai
+      .request(app)
+      .put(`/update/${userId}`)
+      .send(updatedUser)
+      .end(function (err, res) {
+        expect(res).to.have.status(404);
+        expect(res.body).to.deep.equal({ message: 'User not found' });
+        done();
+      });
+  });
 });
 
 // Update password
-router.put('/update/password/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { password } = req.body;
+describe('PUT /update/password/:id', function () {
+  it('should update the password of a user and return the updated user', function (done) {
+    const userId = 'exampleid';
+    const updatedPassword = { password: 'newpassword' };
 
-    const updatedUser = await User.findByIdAndUpdate(id, {
-      password
-    }, { new: true });
+    chai
+      .request(app)
+      .put(`/update/password/${userId}`)
+      .send(updatedPassword)
+      .end(function (err, res) {
+        expect(res).to.have.status(200);
+        expect(res.body).to.deep.equal(updatedPassword);
+        done();
+      });
+  });
 
-    if (!updatedUser) {
-      return res.status(404).json({ message: 'User not found' });
-    }
+  it('should return an error message if the user is not found', function (done) {
+    const userId = 'nonexistentid';
+    const updatedPassword = { password: 'newpassword' };
 
-    res.json(updatedUser);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
+    chai
+      .request(app)
+      .put(`/update/password/${userId}`)
+      .send(updatedPassword)
+      .end(function (err, res) {
+        expect(res).to.have.status(404);
+        expect(res.body).to.deep.equal({ message: 'User not found' });
+        done();
+      });
+  });
 });
 
 // Login
-router.post('/login', async (req, res) => {
-  try {
-    // Implement login logic here
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
+describe('POST /login', function () {
+  it('should implement login logic', function (done) {
+    chai
+      .request(app)
+      .post('/login')
+      .send({ username: 'testuser', password: 'testpassword' })
+      .end(function (err, res) {
+        // Write your assertions here
+        done();
+      });
+  });
 });
 
 // Forgot password
-router.post('/forgotpassword', async (req, res) => {
-  try {
-    // Implement forgot password logic here
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
+describe('POST /forgotpassword', function () {
+  it('should implement forgot password logic', function (done) {
+    chai
+      .request(app)
+      .post('/forgotpassword')
+      .send({ email: 'testuser@example.com' })
+      .end(function (err, res) {
+        // Write your assertions here
+        done();
+      });
+  });
 });
 
 module.exports = router;
