@@ -1,86 +1,92 @@
-const express = require('express');
-const User = require('../models/User');
+const chai = require('chai');
+const chaiHttp = require('chai-http');
+const app = require('../app');
+const should = chai.should();
 
-const router = express.Router();
+chai.use(chaiHttp);
 
-// Register a new user
-router.post('/register', async (req, res) => {
-  try {
-    const { username, email, password } = req.body;
-
-    const user = new User({ username, email, password });
-
-    await user.save();
-
-    res.status(201).json({ message: 'User registered successfully' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
+// Test user registration
+describe('POST /register', () => {
+  it('should register a new user', (done) => {
+    chai.request(app)
+      .post('/register')
+      .send({
+        username: 'testuser',
+        email: 'test@example.com',
+        password: 'testpassword'
+      })
+      .end((err, res) => {
+        res.should.have.status(201);
+        res.body.should.be.a('object');
+        res.body.should.have.property('message').eql('User registered successfully');
+        done();
+      });
+  });
 });
 
-// Update a user
-router.put('/update/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { username, email, password } = req.body;
-
-    const updatedUser = await User.findByIdAndUpdate(id, {
-      username,
-      email,
-      password
-    }, { new: true });
-
-    if (!updatedUser) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    res.json(updatedUser);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
+// Test updating a user
+describe('PUT /update/:id', () => {
+  it('should update a user', (done) => {
+    chai.request(app)
+      .put('/update/1')
+      .send({
+        username: 'updatedusername',
+        email: 'updatedemail@example.com',
+        password: 'updatedpassword'
+      })
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.should.be.a('object');
+        done();
+      });
+  });
 });
 
-// Update password
-router.put('/update/password/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { password } = req.body;
-
-    const updatedUser = await User.findByIdAndUpdate(id, {
-      password
-    }, { new: true });
-
-    if (!updatedUser) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    res.json(updatedUser);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
+// Test updating password
+describe('PUT /update/password/:id', () => {
+  it('should update user password', (done) => {
+    chai.request(app)
+      .put('/update/password/1')
+      .send({
+        password: 'newpassword'
+      })
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.should.be.a('object');
+        done();
+      });
+  });
 });
 
-// Login
-router.post('/login', async (req, res) => {
-  try {
-    // Implement login logic here
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
+// Test user login
+describe('POST /login', () => {
+  it('should login a user', (done) => {
+    chai.request(app)
+      .post('/login')
+      .send({
+        username: 'testuser',
+        password: 'testpassword'
+      })
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.should.be.a('object');
+        done();
+      });
+  });
 });
 
-// Forgot password
-router.post('/forgotpassword', async (req, res) => {
-  try {
-    // Implement forgot password logic here
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
+// Test forgot password
+describe('POST /forgotpassword', () => {
+  it('should send a password reset email', (done) => {
+    chai.request(app)
+      .post('/forgotpassword')
+      .send({
+        email: 'test@example.com'
+      })
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.should.be.a('object');
+        done();
+      });
+  });
 });
-
-module.exports = router;
