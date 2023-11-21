@@ -1,86 +1,99 @@
-const express = require('express');
-const User = require('../models/User');
+import React from 'react';
 
-const router = express.Router();
+const User = () => {
+  const handleRegister = async () => {
+    try {
+      const response = await fetch('/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, email, password }),
+      });
 
-// Register a new user
-router.post('/register', async (req, res) => {
-  try {
-    const { username, email, password } = req.body;
-
-    const user = new User({ username, email, password });
-
-    await user.save();
-
-    res.status(201).json({ message: 'User registered successfully' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-// Update a user
-router.put('/update/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { username, email, password } = req.body;
-
-    const updatedUser = await User.findByIdAndUpdate(id, {
-      username,
-      email,
-      password
-    }, { new: true });
-
-    if (!updatedUser) {
-      return res.status(404).json({ message: 'User not found' });
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data.message);
+      } else {
+        throw new Error('Failed to register user');
+      }
+    } catch (error) {
+      console.error(error);
+      alert('An error occurred');
     }
+  };
 
-    res.json(updatedUser);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
+  const handleUpdateUser = async (id) => {
+    try {
+      const response = await fetch(`/api/update/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, email, password }),
+      });
 
-// Update password
-router.put('/update/password/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { password } = req.body;
-
-    const updatedUser = await User.findByIdAndUpdate(id, {
-      password
-    }, { new: true });
-
-    if (!updatedUser) {
-      return res.status(404).json({ message: 'User not found' });
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data);
+      } else {
+        throw new Error('Failed to update user');
+      }
+    } catch (error) {
+      console.error(error);
+      alert('An error occurred');
     }
+  };
 
-    res.json(updatedUser);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
+  const handleUpdatePassword = async (id) => {
+    try {
+      const response = await fetch(`/api/update/password/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ password }),
+      });
 
-// Login
-router.post('/login', async (req, res) => {
-  try {
-    // Implement login logic here
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data);
+      } else {
+        throw new Error('Failed to update password');
+      }
+    } catch (error) {
+      console.error(error);
+      alert('An error occurred');
+    }
+  };
 
-// Forgot password
-router.post('/forgotpassword', async (req, res) => {
-  try {
-    // Implement forgot password logic here
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
+  const handleLogin = async () => {
+    try {
+      // Implement login logic here
+    } catch (error) {
+      console.error(error);
+      alert('An error occurred');
+    }
+  };
 
-module.exports = router;
+  const handleForgotPassword = async () => {
+    try {
+      // Implement forgot password logic here
+    } catch (error) {
+      console.error(error);
+      alert('An error occurred');
+    }
+  };
+
+  return (
+    <div>
+      <button onClick={handleRegister}>Register</button>
+      <button onClick={() => handleUpdateUser(userId)}>Update User</button>
+      <button onClick={() => handleUpdatePassword(userId)}>Update Password</button>
+      <button onClick={handleLogin}>Login</button>
+      <button onClick={handleForgotPassword}>Forgot Password</button>
+    </div>
+  );
+};
+
+export default User;
