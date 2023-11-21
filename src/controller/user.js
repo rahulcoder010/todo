@@ -1,86 +1,64 @@
-const express = require('express');
-const User = require('../models/User');
+import React from 'react';
 
-const router = express.Router();
+const User = () => {
+  return (
+    <div>
+      {/* Register a new user */}
+      <form>
+        <label htmlFor="username">Username:</label>
+        <input type="text" id="username" name="username" />
 
-// Register a new user
-router.post('/register', async (req, res) => {
-  try {
-    const { username, email, password } = req.body;
+        <label htmlFor="email">Email:</label>
+        <input type="text" id="email" name="email" />
 
-    const user = new User({ username, email, password });
+        <label htmlFor="password">Password:</label>
+        <input type="password" id="password" name="password" />
 
-    await user.save();
+        <button type="submit">Register</button>
+      </form>
 
-    res.status(201).json({ message: 'User registered successfully' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
+      {/* Update a user */}
+      <form>
+        <label htmlFor="update-username">New Username:</label>
+        <input type="text" id="update-username" name="username" />
 
-// Update a user
-router.put('/update/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { username, email, password } = req.body;
+        <label htmlFor="update-email">New Email:</label>
+        <input type="text" id="update-email" name="email" />
 
-    const updatedUser = await User.findByIdAndUpdate(id, {
-      username,
-      email,
-      password
-    }, { new: true });
+        <label htmlFor="update-password">New Password:</label>
+        <input type="password" id="update-password" name="password" />
 
-    if (!updatedUser) {
-      return res.status(404).json({ message: 'User not found' });
-    }
+        <button type="submit">Update</button>
+      </form>
 
-    res.json(updatedUser);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
+      {/* Update password */}
+      <form>
+        <label htmlFor="update-password">New Password:</label>
+        <input type="password" id="update-password" name="password" />
 
-// Update password
-router.put('/update/password/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { password } = req.body;
+        <button type="submit">Update Password</button>
+      </form>
 
-    const updatedUser = await User.findByIdAndUpdate(id, {
-      password
-    }, { new: true });
+      {/* Login */}
+      <form>
+        <label htmlFor="login-email">Email:</label>
+        <input type="text" id="login-email" name="email" />
 
-    if (!updatedUser) {
-      return res.status(404).json({ message: 'User not found' });
-    }
+        <label htmlFor="login-password">Password:</label>
+        <input type="password" id="login-password" name="password" />
 
-    res.json(updatedUser);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
+        <button type="submit">Login</button>
+      </form>
 
-// Login
-router.post('/login', async (req, res) => {
-  try {
-    // Implement login logic here
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
+      {/* Forgot password */}
+      <form>
+        <label htmlFor="forgot-password-email">Email:</label>
+        <input type="text" id="forgot-password-email" name="email" />
 
-// Forgot password
-router.post('/forgotpassword', async (req, res) => {
-  try {
-    // Implement forgot password logic here
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
+        <button type="submit">Forgot Password</button>
+      </form>
+    </div>
+  );
+};
 
-module.exports = router;
+export default User;
