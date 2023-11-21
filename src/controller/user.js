@@ -1,86 +1,68 @@
 const express = require('express');
 const User = require('../models/User');
+const chai = require('chai');
+const chaiHttp = require('chai-http');
+const userController = require('./user');
 
-const router = express.Router();
+chai.use(chaiHttp);
+const expect = chai.expect;
 
-// Register a new user
-router.post('/register', async (req, res) => {
-  try {
-    const { username, email, password } = req.body;
+describe('Login Endpoint', () => {
+  it('should return a success message if login is successful', (done) => {
+    const req = {
+      body: {
+        username: 'testUser',
+        password: 'testPassword'
+      }
+    };
+    const res = {
+      status: function(code) {
+        expect(code).to.equal(200);
+        return this;
+      },
+      json: function(response) {
+        expect(response.message).to.equal('Login successful');
+        done();
+      }
+    };
+    userController.login(req, res);
+  });
 
-    const user = new User({ username, email, password });
-
-    await user.save();
-
-    res.status(201).json({ message: 'User registered successfully' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
+  it('should return an error message if login fails', (done) => {
+    const req = {
+      body: {
+        username: 'testUser',
+        password: 'invalidPassword'
+      }
+    };
+    const res = {
+      status: function(code) {
+        expect(code).to.equal(401);
+        return this;
+      },
+      json: function(response) {
+        expect(response.message).to.equal('Invalid credentials');
+        done();
+      }
+    };
+    userController.login(req, res);
+  });
 });
 
-// Update a user
-router.put('/update/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { username, email, password } = req.body;
-
-    const updatedUser = await User.findByIdAndUpdate(id, {
-      username,
-      email,
-      password
-    }, { new: true });
-
-    if (!updatedUser) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    res.json(updatedUser);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-// Update password
-router.put('/update/password/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { password } = req.body;
-
-    const updatedUser = await User.findByIdAndUpdate(id, {
-      password
-    }, { new: true });
-
-    if (!updatedUser) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    res.json(updatedUser);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-// Login
 router.post('/login', async (req, res) => {
   try {
-    // Implement login logic here
+    const { username, password } = req.body;
+
+    const user = await User.findOne({ username });
+
+    if (!user || user.password !== password) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    res.status(200).json({ message: 'Login successful' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
 });
-
-// Forgot password
-router.post('/forgotpassword', async (req, res) => {
-  try {
-    // Implement forgot password logic here
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
 module.exports = router;
