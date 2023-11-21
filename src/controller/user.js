@@ -67,6 +67,36 @@ router.put('/update/password/:id', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     // Implement login logic here
+    // Test cases for the login endpoint using chai & mocha
+    describe('POST /login', () => {
+      it('should return 200 and a success message if username and password match', () => {
+        chai.request(app)
+          .post('/login')
+          .send({ username: 'testuser', password: 'testpassword' })
+          .end((err, res) => {
+            expect(res).to.have.status(200);
+            expect(res.body).to.have.property('message').equal('Login successful');
+          });
+      });
+
+      it('should return 401 if username or password is incorrect', () => {
+        chai.request(app)
+          .post('/login')
+          .send({ username: 'testuser', password: 'incorrectpassword' })
+          .end((err, res) => {
+            expect(res).to.have.status(401);
+          });
+      });
+
+      it('should return 500 if there is a server error', () => {
+        chai.request(app)
+          .post('/login')
+          .send({ username: 'testuser', password: 'testpassword' })
+          .end((err, res) => {
+            expect(res).to.have.status(500);
+          });
+      });
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
