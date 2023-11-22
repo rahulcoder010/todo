@@ -16,4 +16,8 @@ const io = socketIO(server);
 
 app.use('/', routes);
 
+app.get('/login', (req, res) => {
+  // Code for login module
+});
+
 module.exports = app;
