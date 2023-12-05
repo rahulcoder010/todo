@@ -67,6 +67,30 @@ router.put('/update/password/:id', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     // Implement login logic here
+    // Test cases for login module
+    // Test case 1: Valid credentials
+    const { email, password } = req.body;
+    const user = await User.findOne({ email, password });
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid email or password' });
+    }
+    res.json({ message: 'Login successful' });
+
+    // Test case 2: Missing email
+    const { password } = req.body;
+    const user2 = await User.findOne({ password });
+    if (!user2) {
+      return res.status(400).json({ message: 'Invalid email or password' });
+    }
+    res.json({ message: 'Login successful' });
+
+    // Test case 3: Missing password
+    const { email } = req.body;
+    const user3 = await User.findOne({ email });
+    if (!user3) {
+      return res.status(400).json({ message: 'Invalid email or password' });
+    }
+    res.json({ message: 'Login successful' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
