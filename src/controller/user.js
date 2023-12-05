@@ -67,6 +67,21 @@ router.put('/update/password/:id', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     // Implement login logic here
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid email or password' });
+    }
+
+    const passwordMatch = await user.comparePassword(password);
+
+    if (!passwordMatch) {
+      return res.status(400).json({ message: 'Invalid email or password' });
+    }
+
+    res.json({ message: 'Login successful' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
