@@ -16,4 +16,8 @@ const io = socketIO(server);
 
 app.use('/', routes);
 
-module.exports = app;
+// WRITE APP JS CODE
+
+app.use((req, res, next) => {
+  res.status(404).send('Not Found');
+});
