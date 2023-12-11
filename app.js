@@ -16,4 +16,8 @@ const io = socketIO(server);
 
 app.use('/', routes);
 
+app.use((err, req, res, next) => {
+  // handle error here
+});
+
 module.exports = app;
