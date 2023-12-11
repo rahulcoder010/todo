@@ -1,3 +1,4 @@
+```javascript
 const express = require('express');
 const cors = require('cors');
 const socketIO = require('socket.io');
@@ -16,4 +17,13 @@ const io = socketIO(server);
 
 app.use('/', routes);
 
+// Additional code for bug fix and edge case handling
+
+// Add error handler middleware
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).send('Internal Server Error');
+});
+
 module.exports = app;
+```
