@@ -1,3 +1,4 @@
+```
 const express = require('express');
 const cors = require('cors');
 const socketIO = require('socket.io');
@@ -16,4 +17,10 @@ const io = socketIO(server);
 
 app.use('/', routes);
 
+// New code change
+app.get('/health', (req, res) => {
+  res.status(200).send('Server is healthy');
+});
+
 module.exports = app;
+```
