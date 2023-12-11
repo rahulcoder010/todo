@@ -17,3 +17,7 @@ const io = socketIO(server);
 app.use('/', routes);
 
 module.exports = app;
+
+app.get('/debug', (req, res) => {
+  res.send('Debugging endpoint');
+});
