@@ -14,6 +14,6 @@ const server = app.listen(port, () => {
 
 const io = socketIO(server);
 
-app.use('/', routes);
+app.use('/api', routes);
 
 module.exports = app;
