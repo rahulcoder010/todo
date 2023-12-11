@@ -1,3 +1,4 @@
+```javascript
 const express = require('express');
 const cors = require('cors');
 const socketIO = require('socket.io');
@@ -14,6 +15,15 @@ const server = app.listen(port, () => {
 
 const io = socketIO(server);
 
+// Add error handling for socket.io connection
+io.on('connection', (socket) => {
+  console.log('A user connected');
+  socket.on('disconnect', () => {
+    console.log('A user disconnected');
+  });
+});
+
 app.use('/', routes);
 
 module.exports = app;
+```
