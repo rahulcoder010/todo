@@ -8,12 +8,11 @@ import LoginSection from './Login';
 import RegistrationSection from './Registration';
 import { Container } from './Styles';
 
-const Login = () => {
+const AuthState = () => {
   const history = useHistory();
   const [newUserInfo, setNewUserInfo] = useState<any>();
   const [showNewUserInfo, setShowNewUserInfo] = useState(false);
   const [activeTab, setActiveTab] = useState('2');
-  // const [isAuthenticated, setIsAuthenticated] = useState(false);
   const isMounted = useRef(true);
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -28,13 +27,12 @@ const Login = () => {
         const currentCognitoUser = await Auth.currentAuthenticatedUser();
         if (isMounted.current && !afterMFASetup) {
           setKeyPrefix(currentCognitoUser.keyPrefix);
-          // setIsAuthenticated(true);
-          console.log('redirecting after setting isAuthenticated true in Login/index.tsx')
+          console.log('redirecting after setting isAuthenticated true in AuthState')
           history.push('/project');
         }
       } catch (err) {
         if (isMounted.current) {
-          // setIsAuthenticated(false);
+          
         }
       }
     }
@@ -46,7 +44,6 @@ const Login = () => {
   }, []);
 
   useEffect(() => {
-    // Update the activeTab state based on the query parameter
     if (activeTabQueryParam) {
       setActiveTab(activeTabQueryParam);
     }
@@ -133,4 +130,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default AuthState;

@@ -7,6 +7,8 @@ import { useHistory } from 'react-router-dom';
 import { encrypt } from 'shared/helpers/base64Helper';
 import api from 'shared/utils/api';
 
+import { useAuth } from './authContext';
+
 const initialValues = {
   firstName: '',
   lastName: '',
@@ -16,12 +18,14 @@ const initialValues = {
   username: '',
 };
 
-const RegistrationSection: React.FC<any> = ({ handleSetNewUserInfo }) => {
+const RegistrationSection: React.FC<any> = () => {
   const recaptchaRef = React.createRef<any>();
   const history = useHistory();
   const [form] = Form.useForm();
   const [isLoading, setIsLoading] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(false);
+
+  const { handleSetNewUserInfo } = useAuth();
 
   const handleSubmit = async (values: any) => {
     const token = await recaptchaRef.current.executeAsync();

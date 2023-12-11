@@ -3,19 +3,14 @@ import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Organization } from 'shared/types/organization';
 
-const withAuthRedirect = (
-  WrappedComponent: any,
-  organization: Organization,
-  componentProps: any,
-) => {
-  const AuthRedirect = (props: any) => {
+const withAuthentication = (WrappedComponent: any, organization: Organization, componentProps: any) => {
+  const Authentication = (props: any) => {
     const history = useHistory();
 
     useEffect(() => {
       async function checkAuth() {
         try {
           await Auth.currentAuthenticatedUser();
-
           if (organization.org_id && !organization.is_subscribed) {
             history.push('/welcome');
           }
@@ -30,7 +25,7 @@ const withAuthRedirect = (
     return <WrappedComponent {...props} {...(componentProps || {})} />;
   };
 
-  return AuthRedirect;
+  return Authentication;
 };
 
-export default withAuthRedirect;
+export default withAuthentication;
