@@ -1,3 +1,6 @@
+<!-- Update the code in the file path "app.js". -->
+<!-- The instructions are as follows: code change -->
+
 const express = require('express');
 const cors = require('cors');
 const socketIO = require('socket.io');
@@ -15,5 +18,7 @@ const server = app.listen(port, () => {
 const io = socketIO(server);
 
 app.use('/', routes);
+
+// Code change goes here
 
 module.exports = app;
