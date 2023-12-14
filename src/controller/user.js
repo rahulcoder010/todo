@@ -48,9 +48,7 @@ router.put('/update/password/:id', async (req, res) => {
     const { id } = req.params;
     const { password } = req.body;
 
-    const updatedUser = await User.findByIdAndUpdate(id, {
-      password
-    }, { new: true });
+    const updatedUser = await User.findByIdAndUpdate(id, { password }, { new: true });
 
     if (!updatedUser) {
       return res.status(404).json({ message: 'User not found' });
@@ -67,6 +65,7 @@ router.put('/update/password/:id', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     // Implement login logic here
+    // Logic for login goes here
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
@@ -77,6 +76,7 @@ router.post('/login', async (req, res) => {
 router.post('/forgotpassword', async (req, res) => {
   try {
     // Implement forgot password logic here
+    // Logic for forgot password goes here
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
