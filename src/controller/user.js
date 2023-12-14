@@ -1,9 +1,3 @@
-const express = require('express');
-const User = require('../models/User');
-
-const router = express.Router();
-
-// Register a new user
 router.post('/register', async (req, res) => {
   try {
     const { username, email, password } = req.body;
@@ -19,7 +13,6 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// Update a user
 router.put('/update/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -42,7 +35,6 @@ router.put('/update/:id', async (req, res) => {
   }
 });
 
-// Update password
 router.put('/update/password/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -63,7 +55,6 @@ router.put('/update/password/:id', async (req, res) => {
   }
 });
 
-// Login
 router.post('/login', async (req, res) => {
   try {
     // Implement login logic here
@@ -73,7 +64,6 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// Forgot password
 router.post('/forgotpassword', async (req, res) => {
   try {
     // Implement forgot password logic here

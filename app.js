@@ -1,19 +1,31 @@
-const express = require('express');
-const cors = require('cors');
-const socketIO = require('socket.io');
-const routes = require('./src/routes/index');
+const chai = require('chai');
+const expect = chai.expect;
+const request = require('supertest');
 
-const app = express();
-const port = 3000;
+describe('App', () => {
+  let server;
 
-app.use(cors());
+  beforeEach(() => {
+    server = require('./app'); // Update the file path to "app.js"
+  });
 
-const server = app.listen(port, () => {
-  console.log(`Server started on port ${port}`);
+  afterEach(() => {
+    server.close();
+  });
+
+  describe('GET /', () => {
+    it('should return a 200 status code', (done) => {
+      request(server)
+        .get('/')
+        .expect(200, done);
+    });
+
+    it('should return the correct response body', (done) => {
+      request(server)
+        .get('/')
+        .expect('Content-Type', /json/)
+        .expect({ message: 'Hello World' })
+        .end(done);
+    });
+  });
 });
-
-const io = socketIO(server);
-
-app.use('/', routes);
-
-module.exports = app;

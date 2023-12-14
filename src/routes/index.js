@@ -3,5 +3,5 @@ const taskRoutes = require('./task');
 
 module.exports = {
   userRoutes,
-  taskRoutes
+  taskRoutes,
 };
