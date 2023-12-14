@@ -1,6 +1,5 @@
 const express = require('express');
 const User = require('../models/User');
-
 const router = express.Router();
 
 // Register a new user
@@ -67,6 +66,7 @@ router.put('/update/password/:id', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     // Implement login logic here
+    // (Not included in the original code)
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
@@ -77,6 +77,7 @@ router.post('/login', async (req, res) => {
 router.post('/forgotpassword', async (req, res) => {
   try {
     // Implement forgot password logic here
+    // (Not included in the original code)
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
