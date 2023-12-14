@@ -1,86 +1,95 @@
 const express = require('express');
 const User = require('../models/User');
+const chai = require('chai');
+const chaiHttp = require('chai-http');
 
 const router = express.Router();
 
-// Register a new user
-router.post('/register', async (req, res) => {
-  try {
-    const { username, email, password } = req.body;
+chai.use(chaiHttp);
+chai.should();
 
-    const user = new User({ username, email, password });
+describe('User', () => {
+  describe('POST /register', () => {
+    it('should register a new user', () => {
+      chai.request(router)
+        .post('/register')
+        .send({
+          username: 'testUser',
+          email: 'test@example.com',
+          password: 'test123'
+        })
+        .end((error, response) => {
+          response.should.have.status(201);
+          response.body.should.have.property('message').eql('User registered successfully');
+        });
+    });
+  });
 
-    await user.save();
+  describe('PUT /update/:id', () => {
+    it('should update a user', () => {
+      chai.request(router)
+        .put('/update/1')
+        .send({
+          username: 'updatedUser',
+          email: 'updated@example.com',
+          password: 'updated123'
+        })
+        .end((error, response) => {
+          response.should.have.status(200);
+          response.body.should.have.property('username').eql('updatedUser');
+          response.body.should.have.property('email').eql('updated@example.com');
+          response.body.should.have.property('password').eql('updated123');
+        });
+    });
 
-    res.status(201).json({ message: 'User registered successfully' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
+    it('should return "User not found" if user not found', () => {
+      chai.request(router)
+        .put('/update/999')
+        .send({
+          username: 'updatedUser',
+          email: 'updated@example.com',
+          password: 'updated123'
+        })
+        .end((error, response) => {
+          response.should.have.status(404);
+          response.body.should.have.property('message').eql('User not found');
+        });
+    });
+  });
 
-// Update a user
-router.put('/update/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { username, email, password } = req.body;
+  describe('PUT /update/password/:id', () => {
+    it('should update a user password', () => {
+      chai.request(router)
+        .put('/update/password/1')
+        .send({
+          password: 'newpassword'
+        })
+        .end((error, response) => {
+          response.should.have.status(200);
+          response.body.should.have.property('password').eql('newpassword');
+        });
+    });
 
-    const updatedUser = await User.findByIdAndUpdate(id, {
-      username,
-      email,
-      password
-    }, { new: true });
+    it('should return "User not found" if user not found', () => {
+      chai.request(router)
+        .put('/update/password/999')
+        .send({
+          password: 'newpassword'
+        })
+        .end((error, response) => {
+          response.should.have.status(404);
+          response.body.should.have.property('message').eql('User not found');
+        });
+    });
+  });
 
-    if (!updatedUser) {
-      return res.status(404).json({ message: 'User not found' });
-    }
+  describe('POST /login', () => {
+    //write test cases for login if required
+  });
 
-    res.json(updatedUser);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-// Update password
-router.put('/update/password/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { password } = req.body;
-
-    const updatedUser = await User.findByIdAndUpdate(id, {
-      password
-    }, { new: true });
-
-    if (!updatedUser) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    res.json(updatedUser);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-// Login
-router.post('/login', async (req, res) => {
-  try {
-    // Implement login logic here
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-// Forgot password
-router.post('/forgotpassword', async (req, res) => {
-  try {
-    // Implement forgot password logic here
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
+  describe('POST /forgotpassword', () => {
+    //write test cases for forgot password if required
+  });
 });
 
 module.exports = router;
