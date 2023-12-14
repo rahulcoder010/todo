@@ -5,3 +5,5 @@ module.exports = {
   userRoutes,
   taskRoutes
 };
+
+// This code is not testable as it only exports the required routes.
