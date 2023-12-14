@@ -12,7 +12,7 @@ const server = app.listen(port, () => {
   console.log(`Server started on port ${port}`);
 });
 
-const io = socketIO(server);
+const io = socketIO(server); // Update the line to use lowercase 'io'
 
 app.use('/', routes);
 
