@@ -1,86 +1,128 @@
+```javascript
 const express = require('express');
 const User = require('../models/User');
+const { expect } = require('chai');
+const chaiHttp = require('chai-http');
 
 const router = express.Router();
 
-// Register a new user
-router.post('/register', async (req, res) => {
-  try {
-    const { username, email, password } = req.body;
+chai.use(chaiHttp);
 
-    const user = new User({ username, email, password });
+describe('User Controller', () => {
+  describe('POST /register', () => {
+    it('should register a new user', async () => {
+      const userData = {
+        username: 'testuser',
+        email: 'testuser@example.com',
+        password: 'password123'
+      };
 
-    await user.save();
+      const res = await chai
+        .request(router)
+        .post('/register')
+        .send(userData);
+      
+      expect(res).to.have.status(201);
+      expect(res.body.message).to.equal('User registered successfully');
+    });
+  });
 
-    res.status(201).json({ message: 'User registered successfully' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
+  describe('PUT /update/:id', () => {
+    it('should update a user', async () => {
+      const userId = 'user_id';
+      const updatedUserData = {
+        username: 'updatedusername',
+        email: 'updatedemail@example.com',
+        password: 'newpassword'
+      };
 
-// Update a user
-router.put('/update/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { username, email, password } = req.body;
+      // Mock the findByIdAndUpdate function
+      User.findByIdAndUpdate = jest.fn().mockResolvedValue(updatedUserData);
 
-    const updatedUser = await User.findByIdAndUpdate(id, {
-      username,
-      email,
-      password
-    }, { new: true });
+      const res = await chai
+        .request(router)
+        .put(`/update/${userId}`)
+        .send(updatedUserData);
+      
+      expect(User.findByIdAndUpdate).to.have.been.calledWith(userId, updatedUserData, { new: true });
+      expect(res).to.have.status(200);
+      expect(res.body).to.deep.equal(updatedUserData);
+    });
 
-    if (!updatedUser) {
-      return res.status(404).json({ message: 'User not found' });
-    }
+    it('should handle user not found scenario', async () => {
+      const userId = 'user_id';
+      const updatedUserData = {
+        username: 'updatedusername',
+        email: 'updatedemail@example.com',
+        password: 'newpassword'
+      };
 
-    res.json(updatedUser);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
+      // Mock the findByIdAndUpdate function to return null
+      User.findByIdAndUpdate = jest.fn().mockResolvedValue(null);
 
-// Update password
-router.put('/update/password/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { password } = req.body;
+      const res = await chai
+        .request(router)
+        .put(`/update/${userId}`)
+        .send(updatedUserData);
+      
+      expect(User.findByIdAndUpdate).to.have.been.calledWith(userId, updatedUserData, { new: true });
+      expect(res).to.have.status(404);
+      expect(res.body.message).to.equal('User not found');
+    });
+  });
 
-    const updatedUser = await User.findByIdAndUpdate(id, {
-      password
-    }, { new: true });
+  describe('PUT /update/password/:id', () => {
+    it('should update a user password', async () => {
+      const userId = 'user_id';
+      const newPassword = 'newpassword';
 
-    if (!updatedUser) {
-      return res.status(404).json({ message: 'User not found' });
-    }
+      // Mock the findByIdAndUpdate function to return the updated user
+      User.findByIdAndUpdate = jest.fn().mockResolvedValue({
+        username: 'testuser',
+        email: 'testuser@example.com',
+        password: newPassword
+      });
 
-    res.json(updatedUser);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
+      const res = await chai
+        .request(router)
+        .put(`/update/password/${userId}`)
+        .send({ password: newPassword });
+      
+      expect(User.findByIdAndUpdate).to.have.been.calledWith(userId, { password: newPassword }, { new: true });
+      expect(res).to.have.status(200);
+      expect(res.body.password).to.equal(newPassword);
+    });
 
-// Login
-router.post('/login', async (req, res) => {
-  try {
-    // Implement login logic here
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
+    it('should handle user not found scenario', async () => {
+      const userId = 'user_id';
+      const newPassword = 'newpassword';
 
-// Forgot password
-router.post('/forgotpassword', async (req, res) => {
-  try {
-    // Implement forgot password logic here
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
+      // Mock the findByIdAndUpdate function to return null
+      User.findByIdAndUpdate = jest.fn().mockResolvedValue(null);
+
+      const res = await chai
+        .request(router)
+        .put(`/update/password/${userId}`)
+        .send({ password: newPassword });
+      
+      expect(User.findByIdAndUpdate).to.have.been.calledWith(userId, { password: newPassword }, { new: true });
+      expect(res).to.have.status(404);
+      expect(res.body.message).to.equal('User not found');
+    });
+  });
+
+  describe('POST /login', () => {
+    it('should implement login logic', async () => {
+      // Test login functionality here
+    });
+  });
+
+  describe('POST /forgotpassword', () => {
+    it('should implement forgot password logic', async () => {
+      // Test forgot password functionality here
+    });
+  });
 });
 
 module.exports = router;
+```
