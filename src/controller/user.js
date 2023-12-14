@@ -43,7 +43,7 @@ router.put('/update/:id', async (req, res) => {
 });
 
 // Update password
-router.put('/update/password/:id', async (req, res) => {
+router.patch('/update/password/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const { password } = req.body;

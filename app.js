@@ -4,7 +4,7 @@ const socketIO = require('socket.io');
 const routes = require('./src/routes/index');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000; // Added support for the environment variable PORT in case it is set
 
 app.use(cors());
 
