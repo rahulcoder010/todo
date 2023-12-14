@@ -67,6 +67,23 @@ router.put('/update/password/:id', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     // Implement login logic here
+    const { username, password } = req.body;
+    
+    // Retrieve the user from the database based on the provided username
+    const user = await User.findOne({ username });
+
+    // Check if the user exists
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Check if the password is correct
+    if (user.password !== password) {
+      return res.status(401).json({ message: 'Incorrect password' });
+    }
+
+    res.json({ message: 'Login successful' });
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
@@ -77,6 +94,25 @@ router.post('/login', async (req, res) => {
 router.post('/forgotpassword', async (req, res) => {
   try {
     // Implement forgot password logic here
+    const { email } = req.body;
+
+    // Retrieve the user from the database based on the provided email
+    const user = await User.findOne({ email });
+
+    // Check if the user exists
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Generate a random password
+    const randomPassword = Math.random().toString(36).slice(-8);
+
+    // Update the user's password with the random password
+    user.password = randomPassword;
+    await user.save();
+
+    res.json({ message: 'New password generated and sent to the user' });
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
