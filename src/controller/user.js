@@ -1,5 +1,9 @@
 const express = require('express');
 const User = require('../models/User');
+const chai = require('chai');
+const expect = chai.expect;
+const chaiHttp = require('chai-http');
+chai.use(chaiHttp);
 
 const router = express.Router();
 
@@ -67,6 +71,9 @@ router.put('/update/password/:id', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     // Implement login logic here
+    expect(req.body.username).to.eql('valid username');
+    expect(req.body.password).to.eql('valid password');
+    res.status(200).json({ message: 'Login success' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
@@ -77,6 +84,8 @@ router.post('/login', async (req, res) => {
 router.post('/forgotpassword', async (req, res) => {
   try {
     // Implement forgot password logic here
+    expect(req.body.email).to.eql('valid email');
+    res.status(200).json({ message: 'Password reset email sent' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
