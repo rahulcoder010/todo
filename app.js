@@ -16,4 +16,8 @@ const io = socketIO(server);
 
 app.use('/', routes);
 
-module.exports = app;
+module.exports = {
+  app,
+  server,
+  io
+};
