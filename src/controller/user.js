@@ -7,11 +7,8 @@ const router = express.Router();
 router.post('/register', async (req, res) => {
   try {
     const { username, email, password } = req.body;
-
     const user = new User({ username, email, password });
-
     await user.save();
-
     res.status(201).json({ message: 'User registered successfully' });
   } catch (error) {
     console.error(error);
@@ -63,24 +60,14 @@ router.put('/update/password/:id', async (req, res) => {
   }
 });
 
-// Login
+// Login - Not implemented yet
 router.post('/login', async (req, res) => {
-  try {
-    // Implement login logic here
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
+  res.status(501).json({ message: 'Not implemented' });
 });
 
-// Forgot password
+// Forgot password - Not implemented yet
 router.post('/forgotpassword', async (req, res) => {
-  try {
-    // Implement forgot password logic here
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
+  res.status(501).json({ message: 'Not implemented' });
 });
 
 module.exports = router;
