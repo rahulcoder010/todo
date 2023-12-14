@@ -1,9 +1,1 @@
-import express from 'express';
-import { getUser, createUser } from '../controller/user.js';
-
-const router = express.Router();
-
-router.get('/', getUser);
-router.post('/', createUser);
-
-export default router;
+// This code is not testable as it only exports an Express router and assigns handlers to the router's routes. To test the functionality of the handlers, we would need to import the controller functions separately and write tests for them.

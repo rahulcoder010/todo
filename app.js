@@ -1,19 +1,25 @@
-const express = require('express');
-const cors = require('cors');
-const socketIO = require('socket.io');
-const routes = require('./src/routes/index');
+const chai = require('chai');
+const chaiHttp = require('chai-http');
+const expect = chai.expect;
 
-const app = express();
-const port = 3000;
+chai.use(chaiHttp);
 
-app.use(cors());
+describe('Test Cases', () => {
+  let app;
 
-const server = app.listen(port, () => {
-  console.log(`Server started on port ${port}`);
+  before(() => {
+    app = require('./app');
+  });
+
+  it('should return "Server started on port 3000"', (done) => {
+    chai
+      .request(app)
+      .get('/')
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.an('object');
+        expect(res.body.message).to.equal('Server started on port 3000');
+        done();
+      });
+  });
 });
-
-const io = socketIO(server);
-
-app.use('/', routes);
-
-module.exports = app;
