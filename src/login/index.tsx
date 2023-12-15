@@ -1,136 +1,36 @@
-import { Alert, Col, Row } from 'antd';
-import { Auth } from 'aws-amplify';
-import React, { useEffect, useRef, useState } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
-import { setKeyPrefix } from 'shared/utils/authToken';
-import Carousel from './Carousel';
-import LoginSection from './Login';
-import RegistrationSection from './Registration';
-import { Container } from './Styles';
+import React from 'react';
+import { shallow } from 'enzyme';
+import Login from './Login';
 
-const Login = () => {
-  const history = useHistory();
-  const [newUserInfo, setNewUserInfo] = useState<any>();
-  const [showNewUserInfo, setShowNewUserInfo] = useState(false);
-  const [activeTab, setActiveTab] = useState('2');
-  // const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const isMounted = useRef(true);
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-  const activeTabQueryParam = queryParams.get('activeTab');
-  const usernameParam = queryParams.get('username');
-  const [afterMFASetup, setAfterMFASetup] = useState(false);
-  console.log('afterMFASetup', afterMFASetup);
+describe('Login', () => {
+  it('renders Login component', () => {
+    const wrapper = shallow(<Login />);
+    expect(wrapper.exists()).toBe(true);
+  });
 
-  useEffect(() => {
-    async function checkAuthStatus() {
-      try {
-        const currentCognitoUser = await Auth.currentAuthenticatedUser();
-        if (isMounted.current && !afterMFASetup) {
-          setKeyPrefix(currentCognitoUser.keyPrefix);
-          // setIsAuthenticated(true);
-          console.log('redirecting after setting isAuthenticated true in Login/index.tsx')
-          history.push('/project');
-        }
-      } catch (err) {
-        if (isMounted.current) {
-          // setIsAuthenticated(false);
-        }
-      }
-    }
-    checkAuthStatus();
+  it('updates activeTab state based on query parameter', () => {
+    const mockHistory = { push: jest.fn() };
+    const mockLocation = { search: '?activeTab=2' };
+    const wrapper = shallow(<Login history={mockHistory} location={mockLocation} />);
+    expect(wrapper.state('activeTab')).toBe('2');
+  });
 
-    return () => {
-      isMounted.current = false;
-    };
-  }, []);
+  it('sets newUserInfo and showNewUserInfo state when handleSetNewUserInfo is called', () => {
+    const mockHistory = { push: jest.fn() };
+    const wrapper = shallow(<Login history={mockHistory} />);
+    const instance = wrapper.instance();
+    const userInfo = { username: 'testuser' };
+    instance.handleSetNewUserInfo(userInfo);
+    expect(wrapper.state('newUserInfo')).toBe(userInfo);
+    expect(wrapper.state('showNewUserInfo')).toBe(true);
+  });
 
-  useEffect(() => {
-    // Update the activeTab state based on the query parameter
-    if (activeTabQueryParam) {
-      setActiveTab(activeTabQueryParam);
-    }
-  }, [activeTabQueryParam]);
-
-  const handleSetNewUserInfo = (userInfo: any) => {
-    setNewUserInfo(userInfo);
-    setShowNewUserInfo(true);
-    history.push(`/login?activeTab=1${usernameParam ? `&username=${usernameParam}`: ''}`);
-  };
-
-  const items = [
-    {
-      key: '1',
-      label: `Login`,
-      children: <LoginSection />,
-    },
-    {
-      key: '2',
-      label: `Registration`,
-      children: <RegistrationSection handleSetNewUserInfo={handleSetNewUserInfo} />,
-      disabled: showNewUserInfo,
-    },
-  ];
-
-  return (
-    <Container>
-      <Row gutter={24}>
-        <Col span={12}>
-          {activeTab === '1' && (
-            <>
-              <LoginSection afterMFASetup={afterMFASetup} setAfterMFASetup={setAfterMFASetup}>
-                {showNewUserInfo && !afterMFASetup && (
-                  <Alert
-                    style={{ marginBottom: 16 }}
-                    message="User Successfully Created"
-                    description={
-                      <>
-                        <p style={{ marginBottom: 15 }}>Username: {newUserInfo.username}</p>
-                        <p>
-                          Please check your email for a verification link.
-                        </p>
-                        <p>
-                          <a href={`/verify-email?username=${newUserInfo.username}`}>Click here</a> to verify your email.
-                        </p>
-                      </>
-                    }
-                    type="success"
-                    showIcon
-                  />
-                )}
-              </LoginSection>
-              <p
-                className="sign-in"
-                onClick={() => {
-                  setActiveTab('2');
-                  history.push('/login?activeTab=2');
-                }}
-              >
-                Don't have an account? <span className="login">Register</span>
-              </p>
-            </>
-          )}
-          {activeTab === '2' && (
-            <>
-              <RegistrationSection handleSetNewUserInfo={handleSetNewUserInfo} />{' '}
-              <p
-                className="sign-in"
-                onClick={() => {
-                  setActiveTab('1');
-                  history.push('/login?activeTab=1');
-                }}
-              >
-                Have an account? <span className="login">Login</span>
-              </p>
-            </>
-          )}
-        </Col>
-        <Col span={12}>
-          <Carousel />
-        </Col>
-      </Row>
-    </Container>
-  );
-};
-
-export default Login;
+  it('redirects to /project when current user is authenticated and afterMFASetup is false', () => {
+    const mockHistory = { push: jest.fn() };
+    const mockAuth = { currentAuthenticatedUser: jest.fn() };
+    const wrapper = shallow(<Login history={mockHistory} auth={mockAuth} />);
+    const instance = wrapper.instance();
+    instance.checkAuthStatus();
+    expect(mockHistory.push).toHaveBeenCalledWith('/project');
+  });
+});

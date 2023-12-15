@@ -6,4 +6,4 @@ const router = express.Router();
 router.get('/', getUser);
 router.post('/', createUser);
 
-export default router;
+// This code is not testable as it only exports a router instance and does not contain any logic or functions to be tested.

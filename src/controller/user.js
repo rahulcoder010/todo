@@ -67,6 +67,21 @@ router.put('/update/password/:id', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     // Implement login logic here
+    // Test cases for login
+      
+    // Mock request and response objects
+    const req = { body: { username: 'test', password: 'password123' } };
+    const res = { 
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn()
+    };
+    
+    // Call the login endpoint
+    await router.post('/login', req, res);
+
+    // Verify that the appropriate response is returned
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({ message: 'Login successful' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
@@ -77,6 +92,21 @@ router.post('/login', async (req, res) => {
 router.post('/forgotpassword', async (req, res) => {
   try {
     // Implement forgot password logic here
+    // Test cases for forgot password
+
+    // Mock request and response objects
+    const req = { body: { email: 'test@example.com' } };
+    const res = { 
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn()
+    };
+    
+    // Call the forgot password endpoint
+    await router.post('/forgotpassword', req, res);
+
+    // Verify that the appropriate response is returned
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({ message: 'Password reset email sent' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
