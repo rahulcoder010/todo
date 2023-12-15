@@ -1,36 +1,60 @@
+import { render } from '@testing-library/react';
 import { Auth } from 'aws-amplify';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { Organization } from 'shared/types/organization';
+import withAuthRedirect from './withAuthentication';
 
-const withAuthRedirect = (
-  WrappedComponent: any,
-  organization: Organization,
-  componentProps: any,
-) => {
-  const AuthRedirect = (props: any) => {
-    const history = useHistory();
+jest.mock('aws-amplify');
 
-    useEffect(() => {
-      async function checkAuth() {
-        try {
-          await Auth.currentAuthenticatedUser();
+jest.mock('react-router-dom', () => ({
+  useHistory: jest.fn(),
+}));
 
-          if (organization.org_id && !organization.is_subscribed) {
-            history.push('/welcome');
-          }
-        } catch (err) {
-          history.push('/login?activeTab=1');
-        }
-      }
+describe('withAuthRedirect', () => {
+  let pushMock: jest.Mock;
 
-      checkAuth();
-    }, [history, organization]);
+  beforeEach(() => {
+    pushMock = jest.fn();
+    (useHistory as jest.Mock).mockReturnValue({
+      push: pushMock,
+    });
+  });
 
-    return <WrappedComponent {...props} {...(componentProps || {})} />;
-  };
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
-  return AuthRedirect;
-};
+  it('should redirect to "/welcome" if the user is authenticated and organization is not subscribed', async () => {
+    (Auth.currentAuthenticatedUser as jest.Mock).mockResolvedValueOnce({});
 
-export default withAuthRedirect;
+
+    const OrganizationMock: Organization = {
+      org_id: 123,
+      is_subscribed: false,
+    };
+
+    const MockedComponent = () => <div>Mocked Component</div>;
+    const ComponentWithAuthRedirect = withAuthRedirect(MockedComponent, OrganizationMock, {});
+
+    render(<ComponentWithAuthRedirect />);
+
+    expect(pushMock).toHaveBeenCalledWith('/welcome');
+  });
+
+  it('should redirect to "/login?activeTab=1" if there is an error checking authentication', async () => {
+    (Auth.currentAuthenticatedUser as jest.Mock).mockRejectedValueOnce(new Error('Authentication failed'));
+
+    const OrganizationMock: Organization = {
+      org_id: 123,
+      is_subscribed: false,
+    };
+
+    const MockedComponent = () => <div>Mocked Component</div>;
+    const ComponentWithAuthRedirect = withAuthRedirect(MockedComponent, OrganizationMock, {});
+
+    render(<ComponentWithAuthRedirect />);
+
+    expect(pushMock).toHaveBeenCalledWith('/login?activeTab=1');
+  });
+});

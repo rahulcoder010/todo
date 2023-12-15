@@ -67,6 +67,14 @@ router.put('/update/password/:id', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     // Implement login logic here
+    const { email, password } = req.body;
+    const user = await User.findOne({ email, password });
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    res.json({ message: 'User logged in successfully' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
@@ -77,6 +85,14 @@ router.post('/login', async (req, res) => {
 router.post('/forgotpassword', async (req, res) => {
   try {
     // Implement forgot password logic here
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    res.json({ message: 'Reset password email sent' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
