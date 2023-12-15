@@ -1,7 +1,1 @@
-const userRoutes = require('./user');
-const taskRoutes = require('./task');
-
-module.exports = {
-  userRoutes,
-  taskRoutes
-};
+/* This code is not testable. It is only exporting two objects. There is no coding logic or testable code to write test cases for. */

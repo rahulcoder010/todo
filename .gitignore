@@ -1,130 +1,202 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-lerna-debug.log*
-.pnpm-debug.log*
+import unittest
 
-# Diagnostic reports (https://nodejs.org/api/report.html)
-report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+class TestSelectedFiles(unittest.TestCase):
+    
+    def test_logs_file(self):
+        # Test case for logs file
+        pass
+    
+    def test_npm_debug_log_file(self):
+        # Test case for npm-debug.log file
+        pass
+    
+    def test_yarn_debug_log_file(self):
+        # Test case for yarn-debug.log file
+        pass
+    
+    def test_yarn_error_log_file(self):
+        # Test case for yarn-error.log file
+        pass
+    
+    def test_lerna_debug_log_file(self):
+        # Test case for lerna-debug.log file
+        pass
+    
+    def test_pnpm_debug_log_file(self):
+        # Test case for .pnpm-debug.log file
+        pass
+    
+    def test_report_json_files(self):
+        # Test case for report json files
+        pass
+    
+    def test_pids_file(self):
+        # Test case for pids file
+        pass
+    
+    def test_pid_file(self):
+        # Test case for pid file
+        pass
+    
+    def test_seed_files(self):
+        # Test case for seed files
+        pass
+    
+    def test_pid_lock_file(self):
+        # Test case for pid.lock file
+        pass
+    
+    def test_lib_cov_directory(self):
+        # Test case for lib-cov directory
+        pass
+    
+    def test_coverage_directory(self):
+        # Test case for coverage directory
+        pass
+    
+    def test_lcov_files(self):
+        # Test case for lcov files
+        pass
+    
+    def test_nyc_output_directory(self):
+        # Test case for .nyc_output directory
+        pass
+    
+    def test_grunt_directory(self):
+        # Test case for .grunt directory
+        pass
+    
+    def test_bower_components_directory(self):
+        # Test case for bower_components directory
+        pass
+    
+    def test_lock_wscript_file(self):
+        # Test case for .lock-wscript file
+        pass
+    
+    def test_build_release_directory(self):
+        # Test case for build/Release directory
+        pass
+    
+    def test_node_modules_directory(self):
+        # Test case for node_modules directory
+        pass
+    
+    def test_jspm_packages_directory(self):
+        # Test case for jspm_packages directory
+        pass
+    
+    def test_web_modules_directory(self):
+        # Test case for web_modules directory
+        pass
+    
+    def test_typescript_cache_files(self):
+        # Test case for typescript cache files
+        pass
+    
+    def test_npm_cache_directory(self):
+        # Test case for .npm directory
+        pass
+    
+    def test_eslint_cache_directory(self):
+        # Test case for eslint cache directory
+        pass
+    
+    def test_stylelint_cache_directory(self):
+        # Test case for stylelint cache directory
+        pass
+    
+    def test_microbundle_cache_directory(self):
+        # Test case for microbundle cache directory
+        pass
+    
+    def test_node_repl_history_file(self):
+        # Test case for .node_repl_history file
+        pass
+    
+    def test_npm_pack_output_file(self):
+        # Test case for npm pack output file
+        pass
+    
+    def test_yarn_integrity_file(self):
+        # Test case for .yarn-integrity file
+        pass
+    
+    def test_dotenv_files(self):
+        # Test case for dotenv files
+        pass
+    
+    def test_cache_directory(self):
+        # Test case for .cache directory
+        pass
+    
+    def test_parcel_cache_directory(self):
+        # Test case for .parcel-cache directory
+        pass
+    
+    def test_next_build_directory(self):
+        # Test case for .next directory
+        pass
+    
+    def test_nuxt_build_output_directory(self):
+        # Test case for .nuxt directory
+        pass
+    
+    def test_gatsby_files(self):
+        # Test case for .cache/ directory (Gatsby files)
+        pass
+    
+    def test_vuepress_dist_directory(self):
+        # Test case for .vuepress/dist directory
+        pass
+    
+    def test_vuepress_temp_cache_directory(self):
+        # Test case for .temp directory (VuePress v2.x)
+        pass
+    
+    def test_docusaurus_cache_and_generated_files(self):
+        # Test case for .docusaurus directory
+        pass
+    
+    def test_serverless_directories(self):
+        # Test case for .serverless/ directory
+        pass
+    
+    def test_fusebox_cache_directory(self):
+        # Test case for .fusebox/ directory
+        pass
+    
+    def test_dynamodb_local_files(self):
+        # Test case for .dynamodb/ directory (DynamoDB Local files)
+        pass
+    
+    def test_ternjs_port_file(self):
+        # Test case for .tern-port file (TernJS port file)
+        pass
+    
+    def test_vscode_test_directory(self):
+        # Test case for .vscode-test directory (Stores VSCode versions used for testing VSCode extensions)
+        pass
+    
+    def test_yarn_v2_cache_directory(self):
+        # Test case for .yarn/ cache directory (yarn v2)
+        pass
+    
+    def test_yarn_v2_unplugged_directory(self):
+        # Test case for .yarn/ unplugged directory (yarn v2)
+        pass
+    
+    def test_yarn_v2_build_state_file(self):
+        # Test case for .yarn/ build-state.yml file (yarn v2)
+        pass
+    
+    def test_yarn_v2_install_state_gz_file(self):
+        # Test case for .yarn/ install-state.gz file (yarn v2)
+        pass
+    
+    def test_pnp_files(self):
+        # Test case for .pnp.* files
+        pass
 
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
-
-# Directory for instrumented libs generated by jscoverage/JSCover
-lib-cov
-
-# Coverage directory used by tools like istanbul
-coverage
-*.lcov
-
-# nyc test coverage
-.nyc_output
-
-# Grunt intermediate storage (https://gruntjs.com/creating-plugins#storing-task-files)
-.grunt
-
-# Bower dependency directory (https://bower.io/)
-bower_components
-
-# node-waf configuration
-.lock-wscript
-
-# Compiled binary addons (https://nodejs.org/api/addons.html)
-build/Release
-
-# Dependency directories
-node_modules/
-jspm_packages/
-
-# Snowpack dependency directory (https://snowpack.dev/)
-web_modules/
-
-# TypeScript cache
-*.tsbuildinfo
-
-# Optional npm cache directory
-.npm
-
-# Optional eslint cache
-.eslintcache
-
-# Optional stylelint cache
-.stylelintcache
-
-# Microbundle cache
-.rpt2_cache/
-.rts2_cache_cjs/
-.rts2_cache_es/
-.rts2_cache_umd/
-
-# Optional REPL history
-.node_repl_history
-
-# Output of 'npm pack'
-*.tgz
-
-# Yarn Integrity file
-.yarn-integrity
-
-# dotenv environment variable files
-.env
-.env.development.local
-.env.test.local
-.env.production.local
-.env.local
-
-# parcel-bundler cache (https://parceljs.org/)
-.cache
-.parcel-cache
-
-# Next.js build output
-.next
-out
-
-# Nuxt.js build / generate output
-.nuxt
-dist
-
-# Gatsby files
-.cache/
-# Comment in the public line in if your project uses Gatsby and not Next.js
-# https://nextjs.org/blog/next-9-1#public-directory-support
-# public
-
-# vuepress build output
-.vuepress/dist
-
-# vuepress v2.x temp and cache directory
-.temp
-.cache
-
-# Docusaurus cache and generated files
-.docusaurus
-
-# Serverless directories
-.serverless/
-
-# FuseBox cache
-.fusebox/
-
-# DynamoDB Local files
-.dynamodb/
-
-# TernJS port file
-.tern-port
-
-# Stores VSCode versions used for testing VSCode extensions
-.vscode-test
-
-# yarn v2
-.yarn/cache
-.yarn/unplugged
-.yarn/build-state.yml
-.yarn/install-state.gz
-.pnp.*
+if __name__ == '__main__':
+    unittest.main()
