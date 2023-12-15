@@ -83,4 +83,67 @@ router.post('/forgotpassword', async (req, res) => {
   }
 });
 
+// Test cases for register endpoint
+describe('POST /register', () => {
+  it('should return a 201 status code and a success message when a new user is registered', async () => {
+    // Test implementation
+  });
+
+  it('should return a 500 status code and an error message when there is a server error', async () => {
+    // Test implementation
+  });
+});
+
+// Test cases for update endpoint
+describe('PUT /update/:id', () => {
+  it('should return a 200 status code and the updated user when a user is successfully updated', async () => {
+    // Test implementation
+  });
+
+  it('should return a 404 status code and an error message when the user is not found', async () => {
+    // Test implementation
+  });
+
+  it('should return a 500 status code and an error message when there is a server error', async () => {
+    // Test implementation
+  });
+});
+
+// Test cases for update password endpoint
+describe('PUT /update/password/:id', () => {
+  it('should return a 200 status code and the updated user when the password is successfully updated', async () => {
+    // Test implementation
+  });
+
+  it('should return a 404 status code and an error message when the user is not found', async () => {
+    // Test implementation
+  });
+
+  it('should return a 500 status code and an error message when there is a server error', async () => {
+    // Test implementation
+  });
+});
+
+// Test cases for login endpoint
+describe('POST /login', () => {
+  it('should return a 200 status code and a success message when the login is successful', async () => {
+    // Test implementation
+  });
+
+  it('should return a 500 status code and an error message when there is a server error', async () => {
+    // Test implementation
+  });
+});
+
+// Test cases for forgot password endpoint
+describe('POST /forgotpassword', () => {
+  it('should return a 200 status code and a success message when the forgot password request is successful', async () => {
+    // Test implementation
+  });
+
+  it('should return a 500 status code and an error message when there is a server error', async () => {
+    // Test implementation
+  });
+});
+
 module.exports = router;

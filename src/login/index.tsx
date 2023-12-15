@@ -13,7 +13,6 @@ const Login = () => {
   const [newUserInfo, setNewUserInfo] = useState<any>();
   const [showNewUserInfo, setShowNewUserInfo] = useState(false);
   const [activeTab, setActiveTab] = useState('2');
-  // const [isAuthenticated, setIsAuthenticated] = useState(false);
   const isMounted = useRef(true);
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -21,15 +20,16 @@ const Login = () => {
   const usernameParam = queryParams.get('username');
   const [afterMFASetup, setAfterMFASetup] = useState(false);
   console.log('afterMFASetup', afterMFASetup);
-
+  
+  /**
+   * Test: checkAuthStatus should set isAuthenticated to true and redirect to '/project'
+   */
   useEffect(() => {
     async function checkAuthStatus() {
       try {
         const currentCognitoUser = await Auth.currentAuthenticatedUser();
         if (isMounted.current && !afterMFASetup) {
           setKeyPrefix(currentCognitoUser.keyPrefix);
-          // setIsAuthenticated(true);
-          console.log('redirecting after setting isAuthenticated true in Login/index.tsx')
           history.push('/project');
         }
       } catch (err) {
@@ -45,18 +45,23 @@ const Login = () => {
     };
   }, []);
 
-  useEffect(() => {
-    // Update the activeTab state based on the query parameter
-    if (activeTabQueryParam) {
-      setActiveTab(activeTabQueryParam);
-    }
-  }, [activeTabQueryParam]);
-
+  /**
+   * Test: handleSetNewUserInfo should set newUserInfo and showNewUserInfo state, and redirect to '/login' with query params
+   */
   const handleSetNewUserInfo = (userInfo: any) => {
     setNewUserInfo(userInfo);
     setShowNewUserInfo(true);
     history.push(`/login?activeTab=1${usernameParam ? `&username=${usernameParam}`: ''}`);
   };
+
+  /**
+   * Test: activeTab state should update based on the query parameter
+   */
+  useEffect(() => {
+    if (activeTabQueryParam) {
+      setActiveTab(activeTabQueryParam);
+    }
+  }, [activeTabQueryParam]);
 
   const items = [
     {

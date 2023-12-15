@@ -1,5 +1,5 @@
-const userRoutes = require('./user');
-const taskRoutes = require('./task');
+const userRoutes = require('./user.test');
+const taskRoutes = require('./task.test');
 
 module.exports = {
   userRoutes,
