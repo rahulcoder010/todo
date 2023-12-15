@@ -1,9 +1,2 @@
-import express from 'express';
-import { getUser, createUser } from '../controller/user.js';
-
-const router = express.Router();
-
-router.get('/', getUser);
-router.post('/', createUser);
-
-export default router;
+// This code is not testable as it only exports a router instance with two middleware functions.
+// There is no logic present in this file that can be tested.
