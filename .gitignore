@@ -128,3 +128,14 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Test cases
+
+# Test case for file "logs/test.log"
+logs/test.log
+
+# Test case for all files with extension ".test"
+*.test
+
+# Test case for file "src/main.js"
+src/main.js

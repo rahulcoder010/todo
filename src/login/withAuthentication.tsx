@@ -1,9 +1,8 @@
-import { Auth } from 'aws-amplify';
 import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Organization } from 'shared/types/organization';
 
-const withAuthRedirect = (
+export const withAuthRedirect = (
   WrappedComponent: any,
   organization: Organization,
   componentProps: any,
@@ -32,5 +31,3 @@ const withAuthRedirect = (
 
   return AuthRedirect;
 };
-
-export default withAuthRedirect;

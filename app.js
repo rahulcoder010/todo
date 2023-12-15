@@ -17,3 +17,5 @@ const io = socketIO(server);
 app.use('/', routes);
 
 module.exports = app;
+
+// This code is not testable.
