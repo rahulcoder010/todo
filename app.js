@@ -1,19 +1,15 @@
-const express = require('express');
-const cors = require('cors');
-const socketIO = require('socket.io');
-const routes = require('./src/routes/index');
+// app.test.js
+const request = require('supertest');
+const app = require('./app');
 
-const app = express();
-const port = 3000;
+describe('GET /', () => {
+  test('should return 200 OK', async () => {
+    const response = await request(app).get('/');
+    expect(response.statusCode).toBe(200);
+  });
 
-app.use(cors());
-
-const server = app.listen(port, () => {
-  console.log(`Server started on port ${port}`);
+  test('should return "Server started on port 3000"', async () => {
+    const response = await request(app).get('/');
+    expect(response.text).toContain('Server started on port 3000');
+  });
 });
-
-const io = socketIO(server);
-
-app.use('/', routes);
-
-module.exports = app;

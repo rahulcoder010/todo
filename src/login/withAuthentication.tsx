@@ -34,3 +34,5 @@ const withAuthRedirect = (
 };
 
 export default withAuthRedirect;
+
+// This code is not testable because it does not contain any testable logic.

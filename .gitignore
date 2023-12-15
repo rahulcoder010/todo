@@ -1,3 +1,5 @@
+Updated file contents:
+
 # Logs
 logs
 *.log
@@ -93,6 +95,7 @@ dist
 
 # Gatsby files
 .cache/
+
 # Comment in the public line in if your project uses Gatsby and not Next.js
 # https://nextjs.org/blog/next-9-1#public-directory-support
 # public
@@ -128,3 +131,8 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Test cases for selected files
+test/file1.js
+test/file2.js
+test/file3.js

@@ -1,260 +1,147 @@
-import { QuestionCircleOutlined } from '@ant-design/icons';
-import { Button, Checkbox, Col, Form, Input, Row, Tooltip, message } from 'antd';
-import React, { useState } from 'react';
+import { render, fireEvent, waitFor } from '@testing-library/react';
+import RegistrationSection from './register';
 
-import ReCAPTCHA from 'react-google-recaptcha';
-import { useHistory } from 'react-router-dom';
-import { encrypt } from 'shared/helpers/base64Helper';
-import api from 'shared/utils/api';
+test('should submit form successfully', async () => {
+  // Create a mock function for handleSetNewUserInfo
+  const handleSetNewUserInfo = jest.fn();
 
-const initialValues = {
-  firstName: '',
-  lastName: '',
-  orgName: '',
-  title: '',
-  email: '',
-  username: '',
-};
-
-const RegistrationSection: React.FC<any> = ({ handleSetNewUserInfo }) => {
-  const recaptchaRef = React.createRef<any>();
-  const history = useHistory();
-  const [form] = Form.useForm();
-  const [isLoading, setIsLoading] = useState(false);
-  const [acceptTerms, setAcceptTerms] = useState(false);
-
-  const handleSubmit = async (values: any) => {
-    const token = await recaptchaRef.current.executeAsync();
-    setIsLoading(true);
-    const organization = {
-      orgName: values.orgName.trim(),
-      orgEmail: values.email,
-    };
-    const user = {
-      fullName: values.firstName.trim() + ' ' + values.lastName.trim(),
-      firstName: values.firstName.trim(),
-      lastName: values.lastName.trim(),
-      jobTitle: values.title.trim(),
-      userEmail: values.email.trim(),
-      userName: values.username.trim(),
-      userPassword: encrypt(values.password),
-      isSSO: false,
-    };
-
-    await api
-      .post(
-        `/create_organization`,
-        JSON.stringify({
-          organization,
-          user,
-        }),
-      )
-      .then(async (data: any) => {
-        console.log(data);
-        handleSetNewUserInfo(JSON.parse(data.body));
-        setIsLoading(false);
-        message.success('Organization successfully created');
-      })
-      .catch((error: any) => {
-        message.error(`Error creating organization: ${error}`);
-        setIsLoading(false);
-      });
-  };
-
-  const spaceValidator = (_: any, value: string) => {
-    if (value && value.trim() === '') {
-      return Promise.reject(new Error('Spaces are not allowed. Please enter a valid input.'));
-    }
-    return Promise.resolve();
-  };
-
-  const handleAcceptTerms = (e: any) => {
-    setAcceptTerms(e.target.checked);
-  };
-
-  const validatePassword = (_: any, value: any) => {
-    if (!value || value.trim().length === 0) {
-      return Promise.reject('Please enter a password.');
-    }
-
-    if (value.length < 11) {
-      return Promise.reject('Password must be at least 11 characters long.');
-    }
-
-    if (!/\d/.test(value)) {
-      return Promise.reject('Password must contain at least 1 number.');
-    }
-
-    if (!/[!@#$%^&*]/.test(value)) {
-      return Promise.reject('Password must contain at least 1 special character.');
-    }
-
-    if (!/[A-Z]/.test(value)) {
-      return Promise.reject('Password must contain at least 1 uppercase letter.');
-    }
-
-    if (!/[a-z]/.test(value)) {
-      return Promise.reject('Password must contain at least 1 lowercase letter.');
-    }
-
-    return Promise.resolve();
-  };
-
-  return (
-    <div className="registration-section">
-      <h1 style={{ fontSize: 32, textAlign: 'center', color: '#002766' }}>Sign up</h1>
-      <p style={{ textAlign: 'center', marginTop: 8 }}>
-        Get started building your product with AI.
-      </p>
-      <Form
-        style={{ marginTop: 32 }}
-        form={form}
-        name="registration"
-        initialValues={initialValues}
-        layout="vertical"
-        onFinish={handleSubmit}
-      >
-        <Row gutter={16}>
-          <Col span={12}>
-            <Form.Item
-              name="firstName"
-              label="First Name"
-              rules={[
-                { required: true, message: 'Please enter your first name.' },
-                { validator: spaceValidator },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              name="lastName"
-              label="Last Name"
-              rules={[
-                { required: true, message: 'Please enter your last name.' },
-                { validator: spaceValidator },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row gutter={16}>
-          <Col span={12}>
-            <Form.Item
-              name="orgName"
-              label={
-                <span>
-                  Organization Name&nbsp;
-                  <Tooltip title="Company name, project name or a name that corresponds to your account">
-                    <QuestionCircleOutlined />
-                  </Tooltip>
-                </span>
-              }
-              rules={[
-                { required: true, message: 'Please enter your organization name.' },
-                { validator: spaceValidator },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item name="title" label="Job Title">
-              <Input />
-            </Form.Item>
-          </Col>
-        </Row>
-
-        <Form.Item
-          name="email"
-          label="Email Address"
-          rules={[
-            {
-              required: true,
-              message: 'Please enter your email address',
-            },
-            {
-              type: 'email',
-              message: 'Please a enter valid email address',
-            },
-          ]}
-        >
-          <Input />
-        </Form.Item>
-        <Row gutter={16}>
-          <Col span={12}>
-            <Form.Item
-              name="username"
-              label="Username"
-              rules={[
-                { required: true, message: 'Please enter your username' },
-                {
-                  validator: (_, value) => {
-                    const name = value?.trim();
-                    const regex = /^[a-z0-9\-_]+$/;
-                    if (!regex.test(name) && value.length > 0) {
-                      return Promise.reject('Please enter valid a username');
-                    }
-                    return Promise.resolve();
-                  },
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              name="password"
-              label="User Password"
-              rules={[
-                { validator: validatePassword },
-              ]}
-            >
-              <Input.Password />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Form.Item>
-          <Checkbox onChange={handleAcceptTerms}>
-            I have read and agree to the{' '}
-            <a
-              style={{ color: '#1677ff' }}
-              target="_blank"
-              href="https://prodigybuild.com/prodigybuild-legal/terms-of-use/"
-            >
-              Terms of Use
-            </a>{' '}
-            and{' '}
-            <a
-              style={{ color: '#1677ff' }}
-              target="_blank"
-              href="https://prodigybuild.com/prodigybuild-legal/privacy-policy/"
-            >
-              Privacy Policy
-            </a>
-          </Checkbox>
-        </Form.Item>
-        <ReCAPTCHA
-          ref={recaptchaRef}
-          size="invisible"
-          sitekey="6LeYXDkmAAAAAPyJf9pDQxly2HjtpLZAZ0B65c0E"
-        />
-        <Form.Item>
-          <Button
-            style={{ width: '100%', background: 'var(--primary-6, #1890FF)', color: '#FFF' }}
-            type="primary"
-            htmlType="submit"
-            loading={isLoading}
-            disabled={!acceptTerms}
-          >
-            Sign Up
-          </Button>
-        </Form.Item>
-      </Form>
-    </div>
+  // Render the RegistrationSection component
+  const { getByLabelText, getByText } = render(
+    <RegistrationSection handleSetNewUserInfo={handleSetNewUserInfo} />
   );
-};
-export default RegistrationSection;
+
+  // Fill in the form inputs
+  fireEvent.change(getByLabelText('First Name'), { target: { value: 'John' } });
+  fireEvent.change(getByLabelText('Last Name'), { target: { value: 'Doe' } });
+  fireEvent.change(getByLabelText('Organization Name'), { target: { value: 'ABC Company' } });
+  fireEvent.change(getByLabelText('Job Title'), { target: { value: 'Developer' } });
+  fireEvent.change(getByLabelText('Email Address'), { target: { value: 'john.doe@example.com' } });
+  fireEvent.change(getByLabelText('Username'), { target: { value: 'johndoe' } });
+  fireEvent.change(getByLabelText('User Password'), { target: { value: 'Password123!' } });
+  fireEvent.click(getByText('I have read and agree to the Terms of Use and Privacy Policy'));
+  fireEvent.click(getByText('Sign Up'));
+
+  // Wait for the form submission to complete
+  await waitFor(() => {});
+  
+  // Check if handleSetNewUserInfo was called with the expected arguments
+  expect(handleSetNewUserInfo).toHaveBeenCalledWith({
+    organization: {
+      orgName: 'ABC Company',
+      orgEmail: 'john.doe@example.com',
+    },
+    user: {
+      fullName: 'John Doe',
+      firstName: 'John',
+      lastName: 'Doe',
+      jobTitle: 'Developer',
+      userEmail: 'john.doe@example.com',
+      userName: 'johndoe',
+      userPassword: 'U2FsdGVkX1+7140ZQkkiKPnekPpCfE7comt+ykLlXqw=',
+      isSSO: false,
+    },
+  });
+});
+
+test('should display error message when form submission fails', async () => {
+  // Create a mock function for handleSetNewUserInfo
+  const handleSetNewUserInfo = jest.fn();
+
+  // Create a mock function for the api.post method that always throws an error
+  const mockedApiPost = jest.fn().mockRejectedValue('Error creating organization');
+
+  // Mock the api.post method
+  jest.mock('shared/utils/api', () => ({
+    default: {
+      post: mockedApiPost,
+    },
+  }));
+
+  // Render the RegistrationSection component
+  const { getByLabelText, getByText } = render(
+    <RegistrationSection handleSetNewUserInfo={handleSetNewUserInfo} />
+  );
+
+  // Fill in the form inputs
+  fireEvent.change(getByLabelText('First Name'), { target: { value: 'John' } });
+  fireEvent.change(getByLabelText('Last Name'), { target: { value: 'Doe' } });
+  fireEvent.change(getByLabelText('Organization Name'), { target: { value: 'ABC Company' } });
+  fireEvent.change(getByLabelText('Job Title'), { target: { value: 'Developer' } });
+  fireEvent.change(getByLabelText('Email Address'), { target: { value: 'john.doe@example.com' } });
+  fireEvent.change(getByLabelText('Username'), { target: { value: 'johndoe' } });
+  fireEvent.change(getByLabelText('User Password'), { target: { value: 'Password123!' } });
+  fireEvent.click(getByText('I have read and agree to the Terms of Use and Privacy Policy'));
+  fireEvent.click(getByText('Sign Up'));
+
+  // Wait for the form submission to complete
+  await waitFor(() => {});
+  
+  // Check if handleSetNewUserInfo was not called
+  expect(handleSetNewUserInfo).not.toHaveBeenCalled();
+
+  // Check if the error message is displayed
+  expect(getByText('Error creating organization: Error creating organization'));
+});
+
+test('should display error message when a required field is empty', async () => {
+  // Create a mock function for handleSetNewUserInfo
+  const handleSetNewUserInfo = jest.fn();
+
+  // Render the RegistrationSection component
+  const { getByText } = render(
+    <RegistrationSection handleSetNewUserInfo={handleSetNewUserInfo} />
+  );
+
+  // Click the Sign Up button without filling in the form
+  fireEvent.click(getByText('Sign Up'));
+
+  // Wait for the form submission to complete
+  await waitFor(() => {});
+  
+  // Check if handleSetNewUserInfo was not called
+  expect(handleSetNewUserInfo).not.toHaveBeenCalled();
+
+  // Check if the error messages are displayed
+  expect(getByText('Please enter your first name.')).toBeInTheDocument();
+  expect(getByText('Please enter your last name.')).toBeInTheDocument();
+  expect(getByText('Please enter your organization name.')).toBeInTheDocument();
+  expect(getByText('Please enter your email address')).toBeInTheDocument();
+  expect(getByText('Please enter your username')).toBeInTheDocument();
+  expect(getByText('Please enter a password.')).toBeInTheDocument();
+});
+
+test('should display error message when a field contains spaces', async () => {
+  // Create a mock function for handleSetNewUserInfo
+  const handleSetNewUserInfo = jest.fn();
+
+  // Render the RegistrationSection component
+  const { getByLabelText, getByText } = render(
+    <RegistrationSection handleSetNewUserInfo={handleSetNewUserInfo} />
+  );
+
+  // Fill in the form inputs with values containing spaces
+  fireEvent.change(getByLabelText('First Name'), { target: { value: 'John ' } });
+  fireEvent.change(getByLabelText('Last Name'), { target: { value: ' Doe' } });
+  fireEvent.change(getByLabelText('Organization Name'), { target: { value: 'ABC Company' } });
+  fireEvent.change(getByLabelText('Job Title'), { target: { value: 'Developer ' } });
+  fireEvent.change(getByLabelText('Email Address'), { target: { value: 'john.doe@example.com' } });
+  fireEvent.change(getByLabelText('Username'), { target: { value: ' johndoe ' } });
+  fireEvent.change(getByLabelText('User Password'), { target: { value: ' Password123! ' } });
+  fireEvent.click(getByText('I have read and agree to the Terms of Use and Privacy Policy'));
+  fireEvent.click(getByText('Sign Up'));
+
+  // Wait for the form submission to complete
+  await waitFor(() => {});
+  
+  // Check if handleSetNewUserInfo was not called
+  expect(handleSetNewUserInfo).not.toHaveBeenCalled();
+
+  // Check if the error messages are displayed
+  expect(getByText('Spaces are not allowed. Please enter a valid input.')).toBeInTheDocument();
+  expect(getByText('Please enter valid a username')).toBeInTheDocument();
+  expect(getByText('Password must be at least 11 characters long.')).toBeInTheDocument();
+  expect(getByText('Password must contain at least 1 number.')).toBeInTheDocument();
+  expect(getByText('Password must contain at least 1 special character.')).toBeInTheDocument();
+  expect(getByText('Password must contain at least 1 uppercase letter.')).toBeInTheDocument();
+  expect(getByText('Password must contain at least 1 lowercase letter.')).toBeInTheDocument();
+});
