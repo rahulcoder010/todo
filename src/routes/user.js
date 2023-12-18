@@ -1,9 +1,1 @@
-import express from 'express';
-import { getUser, createUser } from '../controller/user.js';
-
-const router = express.Router();
-
-router.get('/', getUser);
-router.post('/', createUser);
-
-export default router;
+// This code is not testable, as it only defines the routes for the user controller functions.
