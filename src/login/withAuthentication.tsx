@@ -3,12 +3,12 @@ import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Organization } from 'shared/types/organization';
 
-const withAuthRedirect = (
+const withAuthentication = (
   WrappedComponent: any,
   organization: Organization,
   componentProps: any,
 ) => {
-  const AuthRedirect = (props: any) => {
+  const AuthHandler = (props: any) => {
     const history = useHistory();
 
     useEffect(() => {
@@ -30,7 +30,7 @@ const withAuthRedirect = (
     return <WrappedComponent {...props} {...(componentProps || {})} />;
   };
 
-  return AuthRedirect;
+  return AuthHandler;
 };
 
-export default withAuthRedirect;
+export default withAuthentication;

@@ -24,7 +24,7 @@ function setCookie(name: string, value?: string, days?: number) {
   document.cookie = name + '=' + (value || '') + expires + '; path=/';
 }
 
-const LoginSection = ({ children, afterMFASetup, setAfterMFASetup }: any) => {
+const useLoginSection = ({ children, afterMFASetup, setAfterMFASetup }: any) => {
   const [form] = Form.useForm();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -581,4 +581,4 @@ const LoginSection = ({ children, afterMFASetup, setAfterMFASetup }: any) => {
   );
 };
 
-export default LoginSection;
+export default useLoginSection;
