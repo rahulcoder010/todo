@@ -1,3 +1,4 @@
+```javascript
 const express = require('express');
 const User = require('../models/User');
 
@@ -84,3 +85,4 @@ router.post('/forgotpassword', async (req, res) => {
 });
 
 module.exports = router;
+```
