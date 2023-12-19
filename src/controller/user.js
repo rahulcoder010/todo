@@ -1,86 +1,64 @@
-const express = require('express');
-const User = require('../models/User');
+// Test cases for selected files
 
-const router = express.Router();
-
-// Register a new user
-router.post('/register', async (req, res) => {
-  try {
-    const { username, email, password } = req.body;
-
-    const user = new User({ username, email, password });
-
-    await user.save();
-
-    res.status(201).json({ message: 'User registered successfully' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-// Update a user
-router.put('/update/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { username, email, password } = req.body;
-
-    const updatedUser = await User.findByIdAndUpdate(id, {
-      username,
-      email,
-      password
-    }, { new: true });
-
-    if (!updatedUser) {
-      return res.status(404).json({ message: 'User not found' });
+// 1. Register a new user
+test('Register a new user', async () => {
+  const req = {
+    body: {
+      username: 'testuser',
+      email: 'testuser@example.com',
+      password: 'password123'
     }
+  };
 
-    res.json(updatedUser);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
+  const res = {
+    status: jest.fn().mockReturnThis(),
+    json: jest.fn()
+  };
+
+  await registerUser(req, res);
+
+  expect(res.status).toHaveBeenCalledWith(201);
+  expect(res.json).toHaveBeenCalledWith({ message: 'User registered successfully' });
 });
 
-// Update password
-router.put('/update/password/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { password } = req.body;
-
-    const updatedUser = await User.findByIdAndUpdate(id, {
-      password
-    }, { new: true });
-
-    if (!updatedUser) {
-      return res.status(404).json({ message: 'User not found' });
+// 2. Update a user
+test('Update a user', async () => {
+  const req = {
+    params: {
+      id: '1234567890'
+    },
+    body: {
+      username: 'updateduser',
+      email: 'updateduser@example.com',
+      password: 'newpassword'
     }
+  };
 
-    res.json(updatedUser);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
+  const res = {
+    json: jest.fn()
+  };
+
+  await updateUser(req, res);
+
+  expect(res.json).toHaveBeenCalled();
 });
 
-// Login
-router.post('/login', async (req, res) => {
-  try {
-    // Implement login logic here
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
+// 3. Update password
+test('Update password', async () => {
+  const req = {
+    params: {
+      id: '1234567890'
+    },
+    body: {
+      password: 'newpassword'
+    }
+  };
 
-// Forgot password
-router.post('/forgotpassword', async (req, res) => {
-  try {
-    // Implement forgot password logic here
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
+  const res = {
+    json: jest.fn()
+  };
 
-module.exports = router;
+  await updatePassword(req, res);
+
+  expect(res.json).toHaveBeenCalled();
+});

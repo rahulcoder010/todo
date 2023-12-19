@@ -1,7 +1,1 @@
-const userRoutes = require('./user');
-const taskRoutes = require('./task');
-
-module.exports = {
-  userRoutes,
-  taskRoutes
-};
+// This code is not testable as it only exports the imported routes. Test cases cannot be written for this code.
