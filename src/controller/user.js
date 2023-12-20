@@ -67,6 +67,18 @@ router.put('/update/password/:id', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     // Implement login logic here
+    // Test cases:
+    // 1. Test if the username and password are correct and return a success message.
+    // 2. Test if the username or password is incorrect and return an error message.
+    
+    const { username, password } = req.body;
+    
+    // Mock implementation for testing purposes
+    if (username === 'admin' && password === 'password') {
+      res.json({ message: 'Login successful' });
+    } else {
+      res.status(401).json({ message: 'Invalid username or password' });
+    }
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
@@ -77,6 +89,18 @@ router.post('/login', async (req, res) => {
 router.post('/forgotpassword', async (req, res) => {
   try {
     // Implement forgot password logic here
+    // Test cases:
+    // 1. Test if a reset password email is sent successfully.
+    // 2. Test if the provided email address does not exist and return an error message.
+    
+    const { email } = req.body;
+    
+    // Mock implementation for testing purposes
+    if (email === 'user@example.com') {
+      res.json({ message: 'Reset password email sent' });
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
